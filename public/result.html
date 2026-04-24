@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Reading — AI Baba</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/animations.css" />
+</head>
+<body>
+  <!-- Canvas background -->
+  <canvas id="starfield"></canvas>
+
+  <!-- Nebula orbs -->
+  <div class="nebula-orb nebula-orb-1"></div>
+  <div class="nebula-orb nebula-orb-2"></div>
+  <div class="nebula-orb nebula-orb-3"></div>
+
+  <!-- Page transition overlay -->
+  <div class="page-transition-overlay" id="page-overlay"></div>
+
+  <div class="page-content">
+    <section class="result-page">
+
+      <!-- Back button -->
+      <button class="back-btn" id="back-btn" aria-label="Return to form">
+        ← Return to the Stars
+      </button>
+
+      <!-- Page title -->
+      <div style="text-align:center;margin-bottom:2rem;animation:fadeSlideUp 0.6s ease both;">
+        <h1 class="title-decorative">Your Cosmic Reading</h1>
+        <p class="subtitle" style="margin-top:0.5rem;">As Divined by AI Baba</p>
+      </div>
+
+      <!-- Birth Summary Card -->
+      <div class="glass-card birth-summary" id="birth-summary">
+        <div class="birth-summary-inner">
+          <div class="zodiac-badge" id="zodiac-badge">✨</div>
+          <div class="birth-info">
+            <div class="birth-name" id="summary-name">Seeker</div>
+            <div class="birth-details" id="summary-details"></div>
+            <div class="sign-chips" id="sign-chips"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div class="loading-state" id="loading-state">
+        <canvas id="zodiac-wheel-canvas" width="200" height="200"></canvas>
+        <div>
+          <p class="loading-text animate-glow-text">AI Baba is reading your stars…</p>
+          <p class="loading-subtext">The cosmos takes a moment to reveal its secrets</p>
+          <div class="loading-dots" style="text-align:center;margin-top:1rem;">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div class="error-state hidden" id="error-state"></div>
+
+      <!-- Reading Card -->
+      <div class="glass-card reading-card hidden" id="reading-card">
+        <div style="text-align:center;margin-bottom:1.75rem;">
+          <p style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--accent-gold);opacity:0.7;">
+            ✦ &nbsp; Sacred Reading &nbsp; ✦
+          </p>
+        </div>
+        <div class="reading-content" id="reading-content"></div>
+      </div>
+
+      <!-- Bottom actions -->
+      <div id="bottom-actions" style="margin-top:2rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button
+          onclick="window.location.href='/'"
+          class="cta-button"
+          style="max-width:220px;padding:0.85rem 1.5rem;font-size:0.85rem;"
+        >
+          <span class="btn-inner">🔮 New Reading</span>
+        </button>
+      </div>
+
+    </section>
+  </div>
+
+  <script type="module" src="/js/result.js"></script>
+</body>
+</html>

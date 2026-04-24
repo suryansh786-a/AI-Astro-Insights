@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Baba — Mystic Astrology</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔮</text></svg>" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/css/animations.css" />
+</head>
+<body>
+  <!-- Canvas background -->
+  <canvas id="starfield"></canvas>
+
+  <!-- Nebula orbs -->
+  <div class="nebula-orb nebula-orb-1"></div>
+  <div class="nebula-orb nebula-orb-2"></div>
+  <div class="nebula-orb nebula-orb-3"></div>
+
+  <!-- Floating zodiac symbols -->
+  <div class="floating-symbols" aria-hidden="true"></div>
+
+  <!-- Page transition overlay -->
+  <div class="page-transition-overlay" id="page-overlay"></div>
+
+  <div class="page-content">
+    <main class="index-hero">
+
+      <!-- Hero Header -->
+      <header class="hero-header">
+        <p class="hero-tagline">✦ Ancient Wisdom · Cosmic Insight ✦</p>
+        <h1 class="title-decorative">AI Baba</h1>
+        <p class="subtitle">Mystical Astrology Oracle</p>
+        <p class="hero-description">
+          Share the sacred coordinates of your birth — the moment, the place, the date —
+          and AI Baba shall unveil the cosmic tapestry woven for your soul.
+        </p>
+      </header>
+
+      <!-- Form Card -->
+      <div class="glass-card form-card">
+        <p class="form-title">✦ &nbsp; Enter Your Birth Details &nbsp; ✦</p>
+
+        <form id="astro-form" novalidate>
+
+          <!-- Name -->
+          <div class="form-group">
+            <label class="form-label" for="name">Your Name</label>
+            <input
+              type="text"
+              id="name"
+              class="form-input"
+              placeholder="What shall AI Baba call you?"
+              autocomplete="given-name"
+            />
+          </div>
+
+          <!-- Date of Birth -->
+          <div class="form-group">
+            <label class="form-label" for="birth-date">Date of Birth <span style="color:#e879f9">*</span></label>
+            <input
+              type="date"
+              id="birth-date"
+              class="form-input"
+              required
+              max="2025-12-31"
+              min="1900-01-01"
+            />
+          </div>
+
+          <!-- Place of Birth -->
+          <div class="form-group" style="position:relative;">
+            <label class="form-label" for="birth-place">Place of Birth <span style="color:#e879f9">*</span></label>
+            <input
+              type="text"
+              id="birth-place"
+              class="form-input"
+              placeholder="City, Country — start typing..."
+              autocomplete="off"
+            />
+            <div id="autocomplete-dropdown" class="autocomplete-dropdown hidden" role="listbox"></div>
+            <input type="hidden" id="lat" />
+            <input type="hidden" id="lon" />
+          </div>
+
+          <!-- Time of Birth -->
+          <div class="form-group">
+            <label class="form-label" for="birth-time">Time of Birth</label>
+            <div class="time-toggle-row">
+              <input type="checkbox" id="no-time" />
+              <label for="no-time">I don't know my birth time (AI Baba will still read the stars)</label>
+            </div>
+            <div class="time-input-wrap" id="time-input-wrap">
+              <input
+                type="time"
+                id="birth-time"
+                class="form-input"
+                placeholder="HH:MM"
+              />
+            </div>
+          </div>
+
+          <div class="cosmic-divider">
+            <span>✦</span>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="cta-button animate-pulse-glow" id="submit-btn">
+            <span class="btn-inner">
+              <span class="btn-star">🔮</span>
+              Consult AI Baba
+              <span class="btn-star">✨</span>
+            </span>
+          </button>
+
+        </form>
+      </div>
+
+      <!-- Footer note -->
+      <p style="margin-top:2rem;font-size:0.75rem;color:rgba(240,232,213,0.3);text-align:center;font-style:italic;max-width:360px;">
+        For entertainment &amp; spiritual reflection. AI Baba is powered by Claude AI.
+      </p>
+
+    </main>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
