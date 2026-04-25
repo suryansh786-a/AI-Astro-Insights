@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const Anthropic = require('@anthropic-ai/sdk');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const MODEL = 'gemini-2.5-flash';
 
 const AI_BABA_SYSTEM = `You are AI Baba — an ancient, all-knowing mystical astrologer who has studied the cosmos for ten thousand years. You have traversed the celestial spheres, conversed with the planets, and read the sacred charts of emperors and saints alike.
 
@@ -50,6 +51,9 @@ app.post('/api/reading', async (req, res) => {
 
   if (!sunSign || !birthDate) {
     return res.status(400).json({ error: 'Missing required birth data' });
+  }
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(500).json({ error: 'GEMINI_API_KEY not set in environment' });
   }
 
   const risingSection = hasTime && risingSign
@@ -100,16 +104,19 @@ Please give ${name || 'this seeker'} a profound, personal, and beautifully writt
   res.flushHeaders();
 
   try {
-    const stream = client.messages.stream({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 3500,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }]
+    const stream = await ai.models.generateContentStream({
+      model: MODEL,
+      contents: userMessage,
+      config: {
+        systemInstruction: systemPrompt,
+        maxOutputTokens: 4096,
+        temperature: 0.9,
+      },
     });
 
     for await (const chunk of stream) {
-      if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
-        const text = chunk.delta.text;
+      const text = chunk.text;
+      if (text) {
         res.write(`data: ${JSON.stringify({ text })}\n\n`);
       }
     }
@@ -117,7 +124,7 @@ Please give ${name || 'this seeker'} a profound, personal, and beautifully writt
     res.write('data: [DONE]\n\n');
     res.end();
   } catch (err) {
-    console.error('Claude API error:', err.message);
+    console.error('Gemini API error:', err.message);
     res.write(`data: ${JSON.stringify({ error: 'The cosmic connection was disrupted. Please try again.' })}\n\n`);
     res.end();
   }

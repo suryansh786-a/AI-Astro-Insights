@@ -1,10 +1,13 @@
-"""AI Baba Astrology Server — Python/Flask backend"""
+"""AI Baba Astrology Server — Python/Flask backend (Gemini)"""
 import os, json
 from datetime import date
 from flask import Flask, request, Response, send_from_directory, jsonify
-import anthropic
+from google import genai
+from google.genai import types
 
 app = Flask(__name__, static_folder='public', static_url_path='')
+
+MODEL = 'gemini-2.5-flash'
 
 AI_BABA_SYSTEM = """You are AI Baba — an ancient, all-knowing mystical astrologer who has studied the cosmos for ten thousand years. You have traversed the celestial spheres, conversed with the planets, and read the sacred charts of emperors and saints alike.
 
@@ -45,9 +48,9 @@ def serve_static(path):
 
 @app.route('/api/reading', methods=['POST'])
 def reading():
-    api_key = os.environ.get('ANTHROPIC_API_KEY', '')
+    api_key = os.environ.get('GEMINI_API_KEY', '')
     if not api_key:
-        return jsonify({'error': 'ANTHROPIC_API_KEY not set in environment'}), 500
+        return jsonify({'error': 'GEMINI_API_KEY not set in environment'}), 500
 
     body = request.get_json()
     if not body or not body.get('sunSign') or not body.get('birthDate'):
@@ -109,17 +112,20 @@ Coordinates: {coords}
 
 Please give {body.get('name', 'this seeker')} a profound, personal, and beautifully written astrological reading following your sacred format. Pay special attention to the 🔮 Upcoming Life Events & Cosmic Forecast section — this is what they have come for. Use the actual current date and transits to generate real, time-specific guidance."""
 
-    client = anthropic.Anthropic(api_key=api_key)
+    client = genai.Client(api_key=api_key)
 
     def generate():
-        with client.messages.stream(
-            model='claude-sonnet-4-6',
-            max_tokens=3500,
-            system=system_prompt,
-            messages=[{'role': 'user', 'content': user_message}]
-        ) as stream:
-            for text in stream.text_stream:
-                yield f"data: {json.dumps({'text': text})}\n\n"
+        for chunk in client.models.generate_content_stream(
+            model=MODEL,
+            contents=user_message,
+            config=types.GenerateContentConfig(
+                system_instruction=system_prompt,
+                max_output_tokens=4096,
+                temperature=0.9,
+            ),
+        ):
+            if chunk.text:
+                yield f"data: {json.dumps({'text': chunk.text})}\n\n"
         yield "data: [DONE]\n\n"
 
     return Response(generate(), mimetype='text/event-stream',
